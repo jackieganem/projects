@@ -1,0 +1,134 @@
+public class PatientQueue {
+    Patient patients[];
+    int size;
+    int[] newArr;
+    int CAPACITY = 10;
+    int capacity;
+
+    public void PatientQueue() {
+        patients = new Patient[10];
+        size = 0;
+    }
+
+    public void enqueue(String name, int priority) {
+        Patient p = new Patient(name, priority);
+        for (int i = 1; i <= capacity; i++) {
+            if (patients[i] == null) {
+                patients[i] = p;
+                bubbleUp(i);
+                size++;
+                return;
+            }
+        }
+    }
+
+    // children are 2i and 2i+1
+    public void bubbleUp(int index) {
+        int parent = index / 2;
+        if (index == 1
+                || patients[parent].priority < patients[index].priority) {
+            return;
+        }
+        Patient parentVal = patients[parent];
+        patients[parent] = patients[index];
+        patients[index] = parentVal;
+        bubbleUp(parent);
+    }
+
+
+    public void bubbleDown(int index) {
+        int leftChild = index * 2;
+        int rightChild = (index * 2) + 1;
+        if (patients[index].priority < patients[leftChild].priority) {
+            Patient child = patients[leftChild];
+            patients[leftChild] = patients[index];
+            patients[index] = child;
+        }
+        if (patients[index].priority < patients[rightChild].priority) {
+            Patient child = patients[rightChild];
+            patients[rightChild] = patients[index];
+            patients[index] = child;
+        }
+
+        if (leftChild < capacity) {
+            bubbleDown(leftChild);
+        }
+        if (rightChild < capacity) {
+            bubbleDown(rightChild);
+        }
+    }
+
+    public void enqueue(Patient patient) {
+        for (int i = 1; i <= capacity; i++) {
+            if (patients[i] == null) {
+                patients[i] = patient;
+                bubbleUp(i);
+                size++;
+                return;
+            }
+        }
+    }
+
+    public String dequeue() {
+        String firstPatient = patients[1].toString();
+        for (int i = 0; i <= capacity; i++) {
+            if (patients[i + 1] == null) {
+                patients[1] = patients[i];
+                patients[i] = null;
+                bubbleDown(1);
+                size--;
+                return firstPatient;
+            }
+        }
+        return firstPatient;
+    }
+
+    public String peek() {
+        return patients[1].toString();
+    }
+
+    public int peekPriority() {
+        return patients[1].priority;
+    }
+
+    public void changePriority(String name, int newPriority) {
+        // loop then bubble up and bubble down
+        for (int i = 0; i < capacity; i++) {
+            if (patients[i].name.equals(name)) {
+                patients[i].priority = newPriority;
+                bubbleUp(i);
+                bubbleDown(1);
+                return;
+            }
+        }
+    }
+
+    public boolean isEmpty() {
+        if (patients == null) {
+            return true;
+        }
+        return false;
+    }
+
+    public int size() {
+        return size;
+    }
+
+    public void clear() {
+        patients = new Patient[10];
+        size = 0;
+    }
+
+    public String toString() {
+        String nameStr = "{";
+        for (int i = 1; i < capacity; i++) {
+            nameStr += patients[i].toString();
+            if (i + 1 < capacity) {
+                nameStr += ",";
+            }
+        }
+        nameStr += "}";
+        return nameStr;
+    }
+
+}
